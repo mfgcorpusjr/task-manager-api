@@ -40,3 +40,28 @@ export const get = async (req: Request, res: Response) => {
     data: task,
   });
 };
+
+export const update = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const existingTask = await prisma.task.findUnique({
+    where: {
+      id: id as string,
+    },
+  });
+
+  if (!existingTask) {
+    throw new NotFoundError("No task found.");
+  }
+
+  const data = taskSchemas.update.parse(req.body);
+
+  const task = await prisma.task.update({
+    data,
+    where: {
+      id: id as string,
+    },
+  });
+
+  res.json({ success: true, data: task });
+};
