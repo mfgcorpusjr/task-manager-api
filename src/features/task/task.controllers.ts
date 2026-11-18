@@ -65,3 +65,28 @@ export const update = async (req: Request, res: Response) => {
 
   res.json({ success: true, data: task });
 };
+
+export const destroy = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const task = await prisma.task.findUnique({
+    where: {
+      id: id as string,
+    },
+  });
+
+  if (!task) {
+    throw new NotFoundError("No task found.");
+  }
+
+  await prisma.task.delete({
+    where: {
+      id: id as string,
+    },
+  });
+
+  res.json({
+    success: true,
+    message: "Task deleted.",
+  });
+};
