@@ -1,4 +1,5 @@
 import express, { type Request, type Response } from "express";
+import "dotenv/config";
 import cors from "cors";
 
 import taskRoutes from "./features/task/task.routes.js";
