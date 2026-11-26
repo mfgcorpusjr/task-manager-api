@@ -1,8 +1,15 @@
 import type { Request, Response } from "express";
 
-import { getTasksQuerySchema, createTaskSchema } from "./task.schemas.js";
+import {
+  getTasksQuerySchema,
+  createTaskSchema,
+  updateTaskSchema,
+} from "./task.schemas.js";
 import { prisma } from "../../lib/prisma.js";
-import type { TaskWhereInput } from "../../generated/prisma/models.js";
+import type {
+  TaskWhereInput,
+  TaskWhereUniqueInput,
+} from "../../generated/prisma/models.js";
 import { NotFoundError } from "../../utils/error.js";
 
 export const getTasks = async (req: Request, res: Response) => {
@@ -65,6 +72,34 @@ export const getTask = async (req: Request, res: Response) => {
   if (!task) {
     throw new NotFoundError("No task found.");
   }
+
+  res.json({
+    success: true,
+    data: task,
+  });
+};
+
+export const updateTask = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const where: TaskWhereUniqueInput = {
+    id: id as string,
+  };
+
+  const existingTask = await prisma.task.findUnique({
+    where,
+  });
+
+  if (!existingTask) {
+    throw new NotFoundError("No task found.");
+  }
+
+  const data = updateTaskSchema.parse(req.body);
+
+  const task = await prisma.task.update({
+    data,
+    where,
+  });
 
   res.json({
     success: true,

@@ -22,5 +22,15 @@ export const createTaskSchema = z.object({
   text: z
     .string({ error: "Text is required." })
     .trim()
-    .min(1, { error: "Text must be at least 1 character." }),
+    .min(1, { error: "Text must be at least 1 character." })
+    .max(191, { error: "Text cannot exceed more than 191 characters." }),
+});
+
+export const updateTaskSchema = z.object({
+  text: z
+    .string({ error: "Text is required." })
+    .trim()
+    .min(1, { error: "Text must be at least 1 character." })
+    .max(191, { error: "Text cannot exceed more than 191 characters." }),
+  isCompleted: z.boolean({ error: "Is completed is required." }),
 });
