@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import { getTasksQuerySchema, createTaskSchema } from "./task.schemas.js";
 import { prisma } from "../../lib/prisma.js";
 import type { TaskWhereInput } from "../../generated/prisma/models.js";
+import { NotFoundError } from "../../utils/error.js";
 
 export const getTasks = async (req: Request, res: Response) => {
   const { page, pageSize, search } = getTasksQuerySchema.parse(req.query);
@@ -47,6 +48,25 @@ export const createTask = async (req: Request, res: Response) => {
   });
 
   res.status(201).json({
+    success: true,
+    data: task,
+  });
+};
+
+export const getTask = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const task = await prisma.task.findUnique({
+    where: {
+      id: id as string,
+    },
+  });
+
+  if (!task) {
+    throw new NotFoundError("No task found.");
+  }
+
+  res.json({
     success: true,
     data: task,
   });
