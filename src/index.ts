@@ -3,6 +3,7 @@ import "dotenv/config";
 import cors from "cors";
 import helmet from "helmet";
 
+import taskRoutes from "./features/task/task.routes.js";
 import { catchAll, error } from "./middlewares/error.middleware.js";
 
 const app = express();
@@ -16,6 +17,8 @@ app.get("/health", (req, res) => {
     service: "Task Manager API",
   });
 });
+
+app.use("/api/v1/tasks", taskRoutes);
 
 app.use(catchAll);
 app.use(error);
