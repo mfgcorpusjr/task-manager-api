@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 
-import { getTasksQuerySchema } from "./task.schemas.js";
+import { getTasksQuerySchema, createTaskSchema } from "./task.schemas.js";
 import { prisma } from "../../lib/prisma.js";
 import type { TaskWhereInput } from "../../generated/prisma/models.js";
 
@@ -36,5 +36,18 @@ export const getTasks = async (req: Request, res: Response) => {
       page,
       pageSize,
     },
+  });
+};
+
+export const createTask = async (req: Request, res: Response) => {
+  const data = createTaskSchema.parse(req.body);
+
+  const task = await prisma.task.create({
+    data,
+  });
+
+  res.status(201).json({
+    success: true,
+    data: task,
   });
 };

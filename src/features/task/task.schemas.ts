@@ -17,3 +17,10 @@ export const getTasksQuerySchema = z.object({
     .min(1, { error: "Search must be at least 1 character." })
     .optional(),
 });
+
+export const createTaskSchema = z.object({
+  text: z
+    .string({ error: "Text is required." })
+    .trim()
+    .min(1, { error: "Text must be at least 1 character." }),
+});
